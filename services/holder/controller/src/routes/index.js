@@ -1,6 +1,7 @@
 const express = require('express');
 const { consumeConnectionInvitationHandler, fetchAllConnectionsHandler } = require('../handlers/connections');
-const { listCredentialsHandler } = require('../handlers/vc');
+const { listCredentialsHandler, satisfyProofListHandler } = require('../handlers/vc');
+const { listPendingPresentationRequestsHandler, sendProofHandler } = require('../handlers/presentation');
 
 const router = express.Router();
 
@@ -10,6 +11,9 @@ router.post('/connections/consume-invitation', consumeConnectionInvitationHandle
 router.get('/connections/fetch-all', fetchAllConnectionsHandler);
 
 router.get('/vc/list', listCredentialsHandler);
+router.get('/vc/satisfy-proof/:presExId/list', satisfyProofListHandler);
 
+router.get('/presentation/pending-requests/list', listPendingPresentationRequestsHandler);
+router.post('/presentation/send-proof', sendProofHandler);
 
 module.exports = router;

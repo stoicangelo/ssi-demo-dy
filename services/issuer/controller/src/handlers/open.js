@@ -168,7 +168,7 @@ async function getSchemaDetailsHandler(req, res) {
             return res.status(404).json({ error: 'Schema not found for the provided category ID.' });
         }
 
-        const { schema_id: schemaId, table_name: tableName } = schemaResults[0];
+        const { schema_id: schemaId, table_name: tableName, cred_def_id: credDefId } = schemaResults[0];
         // const schemaId = "WgWxqztrNooG92RXvxSTWv:2:schema_name:1.0"
 
         // Step 2: Query the ACA-Py Admin API for schema details
@@ -194,6 +194,7 @@ async function getSchemaDetailsHandler(req, res) {
             schema_id: schemaId,
             attributes: schemaData.attrNames || [],
             uattr,
+            cred_def_id: credDefId,
         };
 
         // Step 5: Send the response
