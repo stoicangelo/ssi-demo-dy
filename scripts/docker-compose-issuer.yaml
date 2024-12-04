@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  issuer-db:
+    image: mysql:8.0
+    container_name: issuer-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: issuer_db
+      MYSQL_USER: issuer_user
+      MYSQL_PASSWORD: issuer_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - issuer-db-data:/var/lib/mysql
+
+  issuer-controller:
+    build:
+      context: ../services/issuer/controller
+      dockerfile: Dockerfile
+    container_name: issuer-controller
+    environment:
+      PORT: 4000
+      INDY_LEDGER_URL: http://greenlight.bcovrin.vonx.io
+      ACA_PY_ADMIN_URL: "http://host.docker.internal:${ACAPY_ADMIN_PORT:-8031}"
+      ACA_PY_ADMIN_API_KEY: admin-api-key
+      # DB_HOST: issuer-db
+      DB_HOST: host.docker.internal
+      DB_USER: issuer_user
+      DB_PASSWORD: issuer_password
+      DB_NAME: issuer_db
+    ports:
+      - "4000:4000"
+    depends_on:
+      - issuer-db
+
+
+volumes:
+  issuer-db-data:
+
+  # issuer-webhook:
+  #   build:
+  #     context: ..()/services/issuer/webhook
+  #     dockerfile: Dockerfile
+  #   container_name: issuer-webhook
+  #   environment:
+  #     PORT: 3000
+  #     DB_HOST: issuer-db
+  #     DB_USER: issuer_user
+  #     DB_PASSWORD: issuer_password
+  #     DB_NAME: issuer_db
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - issuer-acapy
+  #     - issuer-db

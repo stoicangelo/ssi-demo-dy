@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  holder-db:
+    image: mysql:8.0
+    container_name: holder-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: holder_db
+      MYSQL_USER: holder_user
+      MYSQL_PASSWORD: holder_password
+    ports:
+      - "3316:3316"
+    volumes:
+      - holder-db-data:/var/lib/mysql
+
+  holder-controller:
+    build:
+      context: ../services/holder/controller
+      dockerfile: Dockerfile
+    container_name: holder-controller
+    environment:
+      PORT: 4001
+      INDY_LEDGER_URL: http://greenlight.bcovrin.vonx.io
+      ACA_PY_ADMIN_URL: "http://host.docker.internal:${ACAPY_ADMIN_PORT:-8041}"
+      ACA_PY_ADMIN_API_KEY: admin-api-key
+      DB_HOST: holder-db
+      DB_USER: holder_user
+      DB_PASSWORD: holder_password
+      DB_NAME: holder_db
+    ports:
+      - "4001:4001"
+    depends_on:
+      - holder-db
+
+
+volumes:
+  holder-db-data:
+
+  # holder-webhook:
+  #   build:
+  #     context: ..()/services/holder/webhook
+  #     dockerfile: Dockerfile
+  #   container_name: holder-webhook
+  #   environment:
+  #     PORT: 3000
+  #     DB_HOST: holder-db
+  #     DB_USER: holder_user
+  #     DB_PASSWORD: holder_password
+  #     DB_NAME: holder_db
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - holder-acapy
+  #     - holder-db

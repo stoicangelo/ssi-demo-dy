@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  verifier-db:
+    image: mysql:8.0
+    container_name: verifier-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: verifier_db
+      MYSQL_USER: verifier_user
+      MYSQL_PASSWORD: verifier_password
+    ports:
+      - "3326:3326"
+    volumes:
+      - verifier-db-data:/var/lib/mysql
+
+  verifier-controller:
+    build:
+      context: ../services/verifier/controller
+      dockerfile: Dockerfile
+    container_name: verifier-controller
+    environment:
+      PORT: 4002
+      INDY_LEDGER_URL: http://greenlight.bcovrin.vonx.io
+      ACA_PY_ADMIN_URL: "http://host.docker.internal:${ACAPY_ADMIN_PORT:-8051}"
+      ACA_PY_ADMIN_API_KEY: admin-api-key
+      # DB_HOST: verifier-db
+      DB_HOST: host.docker.internal
+      DB_USER: verifier_user
+      DB_PASSWORD: verifier_password
+      DB_NAME: verifier_db
+    ports:
+      - "4002:4002"
+    depends_on:
+      - verifier-db
+
+
+volumes:
+  verifier-db-data:
+
+  # verifier-webhook:
+  #   build:
+  #     context: ..()/services/verifier/webhook
+  #     dockerfile: Dockerfile
+  #   container_name: verifier-webhook
+  #   environment:
+  #     PORT: 3000
+  #     DB_HOST: verifier-db
+  #     DB_USER: verifier_user
+  #     DB_PASSWORD: verifier_password
+  #     DB_NAME: verifier_db
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - verifier-acapy
+  #     - verifier-db

@@ -1,0 +1,12 @@
+/acapy/
+/yarn.lock
+/demo_hooks/
+/services/holder/controller/package-lock.json
+/services/issuer/controller/package-lock.json
+/services/verifier/controller/package-lock.json
+/services/issuer/controller/Dockerfile
+/services/holder/controller/Dockerfile
+/services/verifier/controller/Dockerfile
+/services/issuer/controller/node_modules
+/services/holder/controller/node_modules
+/services/verifier/controller/node_modules
