@@ -2,9 +2,10 @@
 # Project Name: ACA-Py Integrated Presentation Management System
 
 ## Overview
-This project implements a robust and modular system to handle presentation exchange and verification using the Aries Cloud Agent (ACA-Py). It supports advanced configurations for digital identity management, including custom attributes, predicates, and streamlined Docker-based deployment.
+This demoo purpose project implements a clinical and overview system to handle issuance presentation exchange and verification using the Aries Cloud Agent (ACA-Py). It supports vanilla configurations for digital identity management, including custom attributes, predicates, and  lineaer Docker-based deployment, assuming the Holder cloud Aget as an edge agent
 
-The repository includes multiple services to manage different aspects of the system, from credential issuance to proof verification, designed to work seamlessly with the ACA-Py framework.
+The repository includes a basic custom controller api services to manage different aspects of the system, from credential issuance to proof verification, designed to work with the just an ACAPy running aries agent. ACA-Py framework. 
+
 
 ---
 
@@ -89,15 +90,8 @@ Ensure all services are running before proceeding to use the system.
 ### API Endpoints
 The project includes a comprehensive API layer for interacting with ACA-Py. Some key endpoints include:
 - **Get Presentation Records**: Retrieve all presentation exchange records.
-- **Verify Presentation**: Verify a specific presentation exchange record.
-- **Issue Credential**: Issue a new credential to a holder.
-
-Refer to the individual service directories for detailed API documentation and examples.
-
-### Key Features
-- **Dynamic Predicate Handling**: Supports flexible verification of attributes and predicates.
-- **Revealed/Unrevealed Attributes**: Configures revealed and unrevealed attributes dynamically for presentation requests.
-- **Integration with ACA-Py**: Directly integrates with the ACA-Py framework for seamless agent management.
+- **Verify Presentation**: Verify a presentation record from Holder.
+- **Issue Credential**: Request Issuance a new credential to an Issuer open portal.
 
 ---
 
@@ -118,10 +112,7 @@ Refer to the individual service directories for detailed API documentation and e
 1. **Networking on Linux**:
    Ensure the `host.docker.internal` replacement is applied correctly if using Linux.
 
-2. **Docker Errors**:
-   Confirm Docker and Docker Compose versions are compatible with the project setup.
-
-3. **ACA-Py Errors**:
+2. **ACA-Py Errors**:
    Verify ACA-Py scripts and configurations are updated as instructed above.
 
 For additional assistance, raise an issue in the repository with a detailed description.
