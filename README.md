@@ -1,5 +1,5 @@
 
-# Project Name: ACA-Py Integrated Presentation Management System
+# Project Name: SSI agent interactions
 
 ## Overview
 This demoo purpose project implements a clinical and overview system to handle issuance presentation exchange and verification using the Aries Cloud Agent (ACA-Py). It supports vanilla configurations for digital identity management, including custom attributes, predicates, and  lineaer Docker-based deployment, assuming the Holder cloud Aget as an edge agent
@@ -79,7 +79,7 @@ Run the following scripts in separate terminal sessions from the root directory 
 
 3. **Mediator Service**:
    ```bash
-   ./scripts/start-mediator-all.sh
+   ./scripts/start-holder-all.sh
    ```
 
 Ensure all services are running before proceeding to use the system.
