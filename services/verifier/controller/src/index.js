@@ -11,18 +11,13 @@ const PORT = process.env.PORT || 3000;
 
 async function initializeServer() {
     try {
-        // Step 1: Establish database connection
         let pool = await connectToDatabase();
-        // await checkPreparatoryData();
 
         
-        // Step 2: Ensure public DID is set
         await ensurePublicDid();
 
-        // Step 3: Setup routes
-        app.use('/verifier-api', routes); // Prefix all routes with `/api`
+        app.use('/verifier-api', routes); 
 
-        // Step 4: Start the server
         app.listen(PORT, () => console.log(`Verfier Controller API running on port ${PORT}`));
     } catch (error) {
         console.error('Failed to initialize server:', error);

@@ -4,7 +4,6 @@ const config = require('../utils/env/config');
 async function requestProofHandler(req, res) {
     const { connection_id, comment, attrs_to_reveal, attr_restriction_common, attr_restriction_value, condition } = req.body;
 
-    // Validate the request body
     if (!connection_id || !comment || !attrs_to_reveal || !attr_restriction_common || !attr_restriction_value) {
         return res.status(400).json({
             error: 'connection_id, comment, attrs_to_reveal, attr_restriction_common, and attr_restriction_value are required.',
@@ -12,7 +11,6 @@ async function requestProofHandler(req, res) {
     }
 
     try {
-        // Step 1: Prepare the requested attributes
         const requestedAttributes = {};
         attrs_to_reveal.forEach((attr) => {
             const restrictions = [
@@ -22,7 +20,6 @@ async function requestProofHandler(req, res) {
                 },
             ];
 
-            // Add specific restrictions based on attr_restriction_value array
             attr_restriction_value.forEach((restriction) => {
                 if (restriction.attr_name === attr) {
                     restrictions[0][`attr::${restriction.attr_name}::value`] = restriction.attr_value;
@@ -35,7 +32,7 @@ async function requestProofHandler(req, res) {
             };
         });
 
-        // Step 2: Prepare the requested predicates
+        // Prepare the requested predicates
         const requestedPredicates = {};
         condition.forEach((cond) => {
             requestedPredicates[`prove_${cond.attr_name}_condition`] = {
@@ -51,7 +48,6 @@ async function requestProofHandler(req, res) {
             };
         });
 
-        // Step 3: Construct the request body for the admin API
         const presentationRequestBody = {
             auto_remove: true,
             auto_verify: false,
@@ -70,7 +66,6 @@ async function requestProofHandler(req, res) {
         };
         console.log(`sendig the request for presentation with the following body : ${JSON.stringify(presentationRequestBody)}`)
 
-        // Step 4: Call the ACA-Py Admin API
         const response = await acaPyClient.post(
             `${config.acapyAdminBase}/present-proof-2.0/send-request`,
             presentationRequestBody,
@@ -78,7 +73,6 @@ async function requestProofHandler(req, res) {
         );
         console.log("presentation request sent!")
 
-        // Step 5: Respond with success
         res.status(200).json({
             message: 'Proof request sent successfully.',
             presentation_request_response: response.data,
@@ -93,10 +87,8 @@ async function requestProofHandler(req, res) {
 }
 
 
-// Fetch pending presentations
 async function getPresentationDetails(req, res) {
     try {
-        // Fetch all presentation exchange records
         const response = await acaPyClient.get(`${config.acapyAdminBase}/present-proof-2.0/records`);
 
         // Filter records with state 'presentation-received'
@@ -104,27 +96,23 @@ async function getPresentationDetails(req, res) {
             (record) => record.state === "presentation-received"
         );
 
-        // Map the filtered records to the required format
+        // Map the filtered records
         const transformedRecords = filteredRecords.map((record) => {
             const byFormat = record.by_format?.pres?.indy || {};
             const revealedAttrs = byFormat.requested_proof?.revealed_attrs || {};
             const unrevealedAttrs = byFormat.requested_proof?.unrevealed_attrs || {};
 
-            // Extract revealed details
             const revealedDetails = Object.entries(revealedAttrs).map(([property, { raw }]) => ({
                 property: property.replace("property_", ""),
                 value: raw,
             }));
 
-            // Extract unrevealed attributes
             const unrevealedAttrsList = Object.keys(unrevealedAttrs).map((attrName) =>
                 attrName.replace("property_", "")
             );
-            // Extract conditions not yet verified
             const conditionsNotYetVerified = Object.entries(record.by_format?.pres_request?.indy?.requested_predicates || {}).map(
                 ([predicateKey, predicateDetails]) => {
                     const { name, p_type, p_value } = predicateDetails;
-                    // Construct condition string if all fields are present
                     return name && p_type && typeof p_value !== "undefined"
                         ? `${name} ${p_type} ${p_value}`
                         : predicateKey;
@@ -152,29 +140,25 @@ const verifyPresentationHandler = async (req, res) => {
     const { presExId } = req.params;
 
     try {
-        // Call the ACA-Py client to verify the presentation
         const response = await acaPyClient.post(
             `${config.acapyAdminBase}/present-proof-2.0/records/${presExId}/verify-presentation`
         );
 
-        // Extract necessary details from the response
         const byFormat = response.data.by_format?.pres?.indy || {};
         const revealedAttrs = byFormat.requested_proof?.revealed_attrs || {};
         const unrevealedAttrs = byFormat.requested_proof?.unrevealed_attrs || {};
         const predicates = response.data.by_format?.pres_request?.indy?.requested_predicates || {};
 
-        // Extract revealed details
         const revealedDetails = Object.entries(revealedAttrs).map(([property, { raw }]) => ({
             property: property.replace("property_", ""),
             value: raw,
         }));
 
-        // Extract unrevealed attributes
         const unrevealedAttrsList = Object.keys(unrevealedAttrs).map((attrName) =>
             attrName.replace("property_", "")
         );
 
-        // Extract conditions not yet verified
+        // Extracting conditions not yet verified
         const conditionsNotYetVerified = Object.entries(predicates).map(([predicateKey, predicateDetails]) => {
             const { name, p_type, p_value } = predicateDetails;
             return name && p_type && typeof p_value !== "undefined"
@@ -182,7 +166,6 @@ const verifyPresentationHandler = async (req, res) => {
                 : predicateKey;
         });
 
-        // Prepare the response object
         const formattedResponse = {
             verified: response.data.verified === "true",
             updated_at: response.data.updated_at,
@@ -191,7 +174,6 @@ const verifyPresentationHandler = async (req, res) => {
             unrevealed_attrs: unrevealedAttrsList,
         };
 
-        // Add conditions based on the verification status
         if (response.data.verified === "true") {
             formattedResponse.conditions_verified = Object.keys(predicates);
         } else {

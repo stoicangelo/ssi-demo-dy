@@ -42,7 +42,7 @@ async function withRetry(queryFunction, retries = 5) {
                 throw error;
             }
             console.warn(`Retrying database query (${attempt}/${retries})...`);
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second between retries
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
 }

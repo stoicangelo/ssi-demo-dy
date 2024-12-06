@@ -9,7 +9,7 @@ async function ensurePublicDid() {
         const response = await acaPyClient.get(config.acapyAdminBase+ '/wallet/did/public');
         if (response.data && response.data.result) {
             console.log('Public DID already exists:', response.data.result.did);
-            return response.data.result.did; // Return existing public DID
+            return response.data.result.did; 
         }
 
         console.log('No public DID found. Creating a new one.');

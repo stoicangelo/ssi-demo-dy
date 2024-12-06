@@ -3,7 +3,7 @@ function toSnakeCase(str) {
 }
 function toCamelCase(str) {
     return str
-        .toLowerCase() // Convert the entire string to lowercase
+        .toLowerCase()
         .replace(/[^a-zA-Z0-9]+(.)/g, (_, char) => char.toUpperCase()); // Capitalize the first letter after non-alphanumeric characters
 }
 
